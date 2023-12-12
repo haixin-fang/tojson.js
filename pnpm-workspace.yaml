@@ -1,2 +1,3 @@
 packages:
-  - packages/* # packages 目录下都是组件包
+  - packages/* 
+  - playground

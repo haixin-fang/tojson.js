@@ -1,0 +1,32 @@
+{
+  "name": "tojson.js",
+  "version": "1.0.0",
+  "main": "dist/tojson.js.cjs.js",
+  "module": "dist/tojson.js.esm.js",
+  "browser": "dist/tojson.js.umd.js",
+  "type": "module",
+  "dependencies": {
+    "psdtojson": "workspace:^",
+    "sketchtojson": "workspace:^"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.23.5",
+    "@babel/preset-env": "^7.23.5",
+    "@rollup/plugin-commonjs": "^11.0.1",
+    "@rollup/plugin-json": "^6.0.1",
+    "@rollup/plugin-node-resolve": "^7.0.0",
+    "rollup": "^4.6.1",
+    "rollup-plugin-babel": "^4.4.0",
+    "rollup-plugin-node-polyfills": "^0.2.1",
+    "rollup-plugin-polyfill-node": "^0.13.0"
+  },
+  "scripts": {
+    "build": "rollup -c",
+    "dev": "rollup -c -w",
+    "pretest": "npm run build",
+    "publish": "npm publish"
+  },
+  "files": [
+    "dist"
+  ]
+}

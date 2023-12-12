@@ -5,9 +5,15 @@
   "main": "index.js",
   "scripts": {
     "bootstrap": "pnpm i && pnpm prepare",
+    "pg": "pnpm --filter \"tojson.js-dome\" dev",
     "lint-fix": "npx eslint . --fix --ext .vue,.js,.ts,.tsx",
     "prepare": "husky install",
-    "commit": "git-cz"
+    "publish": "pnpm --filter \"packages/*\" publish",
+    "clean:top": "rimraf */**/dist */dist coverage dwt*",
+    "clean:modules": "rimraf node_modules **/node_modules **/**/node_modules",
+    "clean:all": "pnpm clean:top && pnpm clean:modules",
+    "commit": "git-cz",
+    "build": "pnpm --filter \"*tojson\" build &&pnpm --filter \"packages/tojson.js\" build && pnpm --filter \"tojson.js-demo\" build"
   },
   "config": {
     "commitizen": {
@@ -15,17 +21,31 @@
     }
   },
   "devDependencies": {
+    "@babel/core": "^7.23.5",
+    "@babel/preset-env": "^7.23.5",
     "@commitlint/config-conventional": "^17.0.2",
-    "eslint": "^6.7.2",
-    "husky": "^8.0.1",
-    "lint-staged": "^13.0.2",
-    "prettier": "^2.2.1",
+    "@rollup/plugin-commonjs": "^11.0.1",
+    "@rollup/plugin-json": "^6.0.1",
+    "@rollup/plugin-node-resolve": "^7.0.0",
     "babel-eslint": "^10.1.0",
     "commitizen": "^4.2.4",
     "commitlint": "^17.0.2",
-    "eslint-plugin-simple-import-sort": "^7.0.0"
+    "eslint": "^6.7.2",
+    "eslint-plugin-simple-import-sort": "^7.0.0",
+    "eslint-plugin-vue": "^9.19.2",
+    "husky": "^8.0.1",
+    "lint-staged": "^13.0.2",
+    "prettier": "^2.2.1",
+    "rollup": "^4.6.1",
+    "rollup-plugin-babel": "^4.4.0",
+    "rollup-plugin-node-polyfills": "^0.2.1",
+    "rollup-plugin-polyfill-node": "^0.13.0",
+    "vue3-essential": "link:plugin:vue/vue3-essential"
   },
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "buffer": "^6.0.3"
+  }
 }

@@ -1,0 +1,33 @@
+{
+  "name": "psdtojson",
+  "version": "1.0.0",
+  "main": "dist/psdtojson.cjs.js",
+  "module": "dist/psdtojson.esm.js",
+  "browser": "dist/psdtojson.umd.js",
+  "type": "module",
+  "dependencies": {
+    "buffer": "^6.0.3",
+    "psd.js": "3.6.3",
+    "uuid": "^9.0.1"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.23.5",
+    "@babel/preset-env": "^7.23.5",
+    "@rollup/plugin-babel": "^6.0.4",
+    "@rollup/plugin-commonjs": "^11.0.1",
+    "@rollup/plugin-json": "^6.0.1",
+    "rollup": "^4.6.1",
+    "rollup-plugin-node-polyfills": "^0.2.1",
+    "rollup-plugin-node-resolve": "^5.2.0",
+    "rollup-plugin-polyfill-node": "^0.13.0"
+  },
+  "scripts": {
+    "build": "rollup -c",
+    "dev": "rollup -c -w",
+    "pretest": "npm run build",
+    "publish": "npm publish"
+  },
+  "files": [
+    "dist"
+  ]
+}

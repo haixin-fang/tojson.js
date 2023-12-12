@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <script src="./dist/sketchtojson.umd.js"></script>
+  </head>
+  <body>
+    <input type="file" id="myInput" />
+  </body>
+  <script>
+    var input = document.getElementById("myInput");
+    input.addEventListener("change", function (e) {
+      console.log("Change event fired!");
+      console.log("Current value:", e.target.value);
+      const files = e.target.files[0];
+      console.log("files", files);
+      const reader = new window.FileReader();
+      reader.onload = () => {
+        handleFileRead(reader);
+      };
+      reader.readAsArrayBuffer(files);
+    });
+
+    function handleFileRead(reader) {
+      const sketch = new Sketch();
+      const result = sketch.init(reader.result);
+      console.log(result);
+    }
+  </script>
+</html>
