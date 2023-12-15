@@ -66,7 +66,7 @@
                   v-show="!isDrag"
                 >
                   <div>
-                    支持 PSD
+                    支持 PSD / Sketch 格式
                     <!-- Sketch / Ai / PPTX / PDF 以及 图片 / 视频格式  -->
                   </div>
                 </div>

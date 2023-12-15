@@ -1,12 +1,12 @@
 {
   "name": "tojson.js",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "main": "dist/tojson.js.cjs.js",
   "module": "dist/tojson.js.esm.js",
   "browser": "dist/tojson.js.umd.js",
   "type": "module",
   "dependencies": {
-    "psdtojson": "workspace:^",
+    "psd-json.js": "workspace:^",
     "sketchtojson": "workspace:^"
   },
   "devDependencies": {
@@ -24,7 +24,7 @@
     "build": "rollup -c",
     "dev": "rollup -c -w",
     "pretest": "npm run build",
-    "publish": "npm publish"
+    "pub": "npm publish"
   },
   "files": [
     "dist"

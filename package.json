@@ -1,5 +1,5 @@
 {
-  "name": "tojson.js",
+  "name": "tojson",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -8,12 +8,12 @@
     "pg": "pnpm --filter \"tojson.js-dome\" dev",
     "lint-fix": "npx eslint . --fix --ext .vue,.js,.ts,.tsx",
     "prepare": "husky install",
-    "publish": "pnpm --filter \"packages/*\" publish",
+    "pub": "pnpm --filter \"*tojson\" pub &&pnpm --filter \"*json.js\" pub",
     "clean:top": "rimraf */**/dist */dist coverage dwt*",
     "clean:modules": "rimraf node_modules **/node_modules **/**/node_modules",
     "clean:all": "pnpm clean:top && pnpm clean:modules",
     "commit": "git-cz",
-    "build": "pnpm --filter \"*tojson\" build &&pnpm --filter \"packages/tojson.js\" build && pnpm --filter \"tojson.js-demo\" build"
+    "build": "pnpm --filter \"*tojson\" build &&pnpm --filter \"*json.js\" build"
   },
   "config": {
     "commitizen": {

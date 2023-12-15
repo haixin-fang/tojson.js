@@ -1,5 +1,5 @@
 {
-  "name": "psdtojson",
+  "name": "psd-json.js",
   "version": "1.0.0",
   "main": "dist/psdtojson.cjs.js",
   "module": "dist/psdtojson.esm.js",
@@ -25,7 +25,7 @@
     "build": "rollup -c",
     "dev": "rollup -c -w",
     "pretest": "npm run build",
-    "publish": "npm publish"
+    "pub": "npm publish"
   },
   "files": [
     "dist"
