@@ -4,6 +4,11 @@
  */
 const signatureList = [
   {
+    mime: "image/sketch",
+    ext: "sketch",
+    signature: [80, 75, 3, 4,20],
+  },
+  {
     mime: "video/mp4",
     ext: "mp4",
     offset: 4,

@@ -81,10 +81,7 @@
                     :key="item.lastModified + item.name"
                   >
                     <div class="design-choose-file__file-item-main">
-                      <img
-                        src="../assets/upload-file-image.svg"
-                        class="design-choose-file__file-image design-choose-file__pointer-none"
-                      /><span
+                      <span
                         class="design-choose-file__file-name design-choose-file__text-ellipsis"
                       >
                         {{ item.name }}
@@ -198,17 +195,7 @@ async function chooseFiles() {
     });
   } else {
     // 打开文件
-    arrFileHandle = await window.showOpenFilePicker({
-      types: [
-        {
-          accept: {
-            "image/*": [types.value.map((key) => "." + key).join(",")], //".png", ".gif", ".jpeg", ".jpg", ".webp",
-          },
-        },
-      ],
-      // 可以选择多个图片
-      multiple: false,
-    });
+    arrFileHandle = await window.showOpenFilePicker();
   }
   // 遍历选择的文件
   for (const fileHandle of arrFileHandle) {
