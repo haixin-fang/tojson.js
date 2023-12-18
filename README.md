@@ -89,7 +89,7 @@ const result = await psdtojson(files);
 ```
 
 - getFileType 方法能获取文件类型
-- types 能返回支持的文件类型
+- types 返回支持的文件类型, 如psd、sketch
 
 ## 未来
 
