@@ -14,7 +14,7 @@
     "clean:modules": "rimraf node_modules **/node_modules **/**/node_modules",
     "clean:all": "pnpm clean:top && pnpm clean:modules",
     "commit": "git-cz",
-    "build": "pnpm --filter \"*tojson\" build &&pnpm --filter \"*json.js\" build"
+    "build": "pnpm --filter \"*tojson\" build &&pnpm --filter \"*json.js\" build && pnpm --filter \"tojson.js-demo\" build"
   },
   "config": {
     "commitizen": {
