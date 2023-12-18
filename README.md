@@ -57,7 +57,6 @@ npm i -S tojson.js
 ```js
 npm i -S psd-json.js
 ```
-
 或
 
 ```js
