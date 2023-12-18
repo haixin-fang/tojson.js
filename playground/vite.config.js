@@ -12,5 +12,6 @@ export default defineConfig({
   resolve: {
     alias,
   },
+  base: "/tojson.js/playground",
   plugins: [vue()],
 });
