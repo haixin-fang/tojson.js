@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "bootstrap": "pnpm i && pnpm prepare",
-    "pg": "pnpm --filter \"tojson.js-dome\" dev",
+    "pg": "pnpm --filter \"tojson.js-demo\" dev",
     "lint-fix": "npx eslint . --fix --ext .vue,.js,.ts,.tsx",
     "prepare": "husky install",
     "pub": "pnpm --filter \"*tojson\" pub &&pnpm --filter \"*json.js\" pub",

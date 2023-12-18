@@ -1,138 +1,148 @@
 <template>
-  <div class="gda-modal-root">
-    <div class="gda-modal-mask"></div>
-    <div
-      tabindex="-1"
-      role="dialog"
-      aria-labelledby="rcDialogTitle1"
-      class="gda-modal-wrap gda-modal-centered"
-    >
-      <div
-        role="document"
-        class="gda-modal"
-        style="width: 560px; transform-origin: -308px 130.5px"
-      >
+  <div class="tojson">
+    <div class="btn" @click="isShow = true">导入</div>
+    <div class="jsoneditor" ref="tojson"></div>
+    <teleport to="body" v-if="isShow">
+      <div class="gda-modal-root">
+        <div class="gda-modal-mask"></div>
         <div
-          tabindex="0"
-          aria-hidden="true"
-          style="width: 0px; height: 0px; overflow: hidden"
-        ></div>
-        <div class="gda-modal-content">
-          <button type="button" aria-label="Close" class="gda-modal-close">
-            <span class="gda-modal-close-x" @click="onClose">
-              <el-icon class="gdaicon gdaicon-close gda-modal-close-icon"
-                ><Close /></el-icon
-            ></span>
-          </button>
-          <div class="gda-modal-header">
-            <div id="rcDialogTitle1" class="gda-modal-title">导入文件</div>
-          </div>
+          tabindex="-1"
+          role="dialog"
+          aria-labelledby="rcDialogTitle1"
+          class="gda-modal-wrap gda-modal-centered"
+        >
           <div
-            class="gda-modal-body"
-            style="padding: 0px; height: 444px; box-sizing: border-box"
+            role="document"
+            class="gda-modal"
+            style="width: 560px; transform-origin: -308px 130.5px"
           >
-            <div class="design-choose-file">
-              <template v-if="fileList.length == 0">
-                <div
-                  class="design-choose-file__empty-file-main design-choose-file__flex-center"
-                  ref="dragArea"
-                >
-                  <template v-if="!isDrag">
-                    <img
-                      src="https://cdn.dancf.com/fe-assets/20221017/f285085e35bfff5e3b59701095636a40.png"
-                      alt=""
-                      width="200"
-                      class="design-choose-file__pointer-none"
-                    />
-                    <div style="font-weight: 600">拖拽文件到此处，或者</div>
+            <div
+              tabindex="0"
+              aria-hidden="true"
+              style="width: 0px; height: 0px; overflow: hidden"
+            ></div>
+            <div class="gda-modal-content">
+              <button type="button" aria-label="Close" class="gda-modal-close">
+                <span class="gda-modal-close-x" @click="onClose">
+                  <el-icon class="gdaicon gdaicon-close gda-modal-close-icon"
+                    ><Close /></el-icon
+                ></span>
+              </button>
+              <div class="gda-modal-header">
+                <div id="rcDialogTitle1" class="gda-modal-title">导入文件</div>
+              </div>
+              <div
+                class="gda-modal-body"
+                style="padding: 0px; height: 444px; box-sizing: border-box"
+              >
+                <div class="design-choose-file">
+                  <template v-if="fileList.length == 0">
                     <div
-                      class="design-choose-file__choose-file-button-2"
-                      @click="chooseFiles"
+                      class="design-choose-file__empty-file-main design-choose-file__flex-center"
+                      ref="dragArea"
                     >
-                      选择文件...
+                      <template v-if="!isDrag">
+                        <img
+                          src="https://cdn.dancf.com/fe-assets/20221017/f285085e35bfff5e3b59701095636a40.png"
+                          alt=""
+                          width="200"
+                          class="design-choose-file__pointer-none"
+                        />
+                        <div style="font-weight: 600">拖拽文件到此处，或者</div>
+                        <div
+                          class="design-choose-file__choose-file-button-2"
+                          @click="chooseFiles"
+                        >
+                          选择文件...
+                        </div>
+                      </template>
+                      <template v-else>
+                        <div class="design-choose-file__dragging-tip-title">
+                          拖拽至此处并松开鼠标
+                        </div>
+                        <div class="design-choose-file__dragging-tip-text">
+                          支持批量
+                        </div>
+                      </template>
+                    </div>
+                    <div
+                      class="design-choose-file__drag-footer design-choose-file__flex-center"
+                      v-show="!isDrag"
+                    >
+                      <div>
+                        支持 PSD / Sketch 格式
+                        <!-- Sketch / Ai / PPTX / PDF 以及 图片 / 视频格式  -->
+                      </div>
                     </div>
                   </template>
                   <template v-else>
-                    <div class="design-choose-file__dragging-tip-title">
-                      拖拽至此处并松开鼠标
+                    <div
+                      class="design-choose-file__files-wrap design-choose-file__hide-scrollbar"
+                    >
+                      <div
+                        class="design-choose-file__file-item design-choose-file__flex-center"
+                        v-for="(item, index) in fileList"
+                        :key="item.lastModified + item.name"
+                      >
+                        <div class="design-choose-file__file-item-main">
+                          <span
+                            class="design-choose-file__file-name design-choose-file__text-ellipsis"
+                          >
+                            {{ item.name }}
+                          </span>
+                        </div>
+                        <i
+                          @click="fileList.splice(index, 1)"
+                          class="iconfont icon-delete design-choose-file__close"
+                        ></i>
+                      </div>
                     </div>
-                    <div class="design-choose-file__dragging-tip-text">
-                      支持批量
+                    <div
+                      class="design-choose-file__not-empty-footer design-choose-file__flex-center"
+                    >
+                      <span
+                        class="design-choose-file__choose-file-button"
+                        @click="chooseFiles"
+                      >
+                        <!-- + 添加文件 -->
+                      </span>
+                      <button
+                        type="button"
+                        class="gda-btn gda-btn-primary"
+                        style="width: 88px"
+                        @click="onGuide"
+                      >
+                        <span>导入</span>
+                      </button>
                     </div>
                   </template>
                 </div>
-                <div
-                  class="design-choose-file__drag-footer design-choose-file__flex-center"
-                  v-show="!isDrag"
-                >
-                  <div>
-                    支持 PSD / Sketch 格式
-                    <!-- Sketch / Ai / PPTX / PDF 以及 图片 / 视频格式  -->
-                  </div>
-                </div>
-              </template>
-              <template v-else>
-                <div
-                  class="design-choose-file__files-wrap design-choose-file__hide-scrollbar"
-                >
-                  <div
-                    class="design-choose-file__file-item design-choose-file__flex-center"
-                    v-for="(item, index) in fileList"
-                    :key="item.lastModified + item.name"
-                  >
-                    <div class="design-choose-file__file-item-main">
-                      <span
-                        class="design-choose-file__file-name design-choose-file__text-ellipsis"
-                      >
-                        {{ item.name }}
-                      </span>
-                    </div>
-                    <i
-                      @click="fileList.splice(index, 1)"
-                      class="iconfont icon-delete design-choose-file__close"
-                    ></i>
-                  </div>
-                </div>
-                <div
-                  class="design-choose-file__not-empty-footer design-choose-file__flex-center"
-                >
-                  <span
-                    class="design-choose-file__choose-file-button"
-                    @click="chooseFiles"
-                  >
-                    <!-- + 添加文件 -->
-                  </span>
-                  <button
-                    type="button"
-                    class="gda-btn gda-btn-primary"
-                    style="width: 88px"
-                    @click="onGuide"
-                  >
-                    <span>导入</span>
-                  </button>
-                </div>
-              </template>
+              </div>
             </div>
+            <div
+              tabindex="0"
+              aria-hidden="true"
+              style="width: 0px; height: 0px; overflow: hidden"
+            ></div>
           </div>
         </div>
-        <div
-          tabindex="0"
-          aria-hidden="true"
-          style="width: 0px; height: 0px; overflow: hidden"
-        ></div>
       </div>
-    </div>
+    </teleport>
   </div>
 </template>
 <script setup>
 import { defineEmits, ref, computed } from "vue";
 import { tryOnMounted, useEventListener } from "@vueuse/core";
 // import Psd from "@/parse/psd";
-import toJson, {getFileType, types as fileTypes} from 'tojson.js'
+import toJson, { getFileType, types as fileTypes } from "tojson.js";
+import JSONEditor from "jsoneditor";
+import "jsoneditor/dist/jsoneditor.min.css";
+const isShow = ref(true);
+const tojson = ref();
 const fileList = ref([]);
 const dragArea = ref();
 const isDrag = ref(false);
-
+let editor = null;
 const types = computed(() => {
   return fileTypes;
 });
@@ -145,6 +155,8 @@ tryOnMounted(() => {
   useEventListener(dragArea.value, "dragover", onDragOver);
   useEventListener(dragArea.value, "dragleave", onDragLeave);
   useEventListener(dragArea.value, "drop", onDrop);
+
+  editor = new JSONEditor(tojson.value);
 });
 
 function onDragOver(e) {
@@ -208,7 +220,9 @@ async function chooseFiles() {
 async function onGuide() {
   const files = fileList.value[0];
   const result = await toJson(files);
+  isShow.value = false;
   console.log(result);
+  editor.set(result);
   // const file = await getFileType(files);
   // if (file) {
   //   const { ext }= file;
@@ -228,6 +242,18 @@ async function onGuide() {
     max-width: calc(100vw - 16px);
     margin: 8px auto;
   }
+}
+.btn{
+  width: 100px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #4365ea;
+  color: white;
+  border-radius: 10px;
+  margin-bottom: 10px;
+  font-weight: bold;
 }
 .gda-modal-mask {
   position: fixed;
