@@ -1,4 +1,10 @@
+# tojson.js
+
 tojson.js 是一个支持解析 Psd、Sketch 转 json 的类库, 该 json 满足 fabric.js 渲染的数据格式.
+
+# 在线体验
+
+https://haixin-fang.github.io/tojson.js/playground
 
 ## 环境准备
 
