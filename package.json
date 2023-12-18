@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "packageManager": "pnpm@7.1.9",
   "scripts": {
     "bootstrap": "pnpm i && pnpm prepare",
     "pg": "pnpm --filter \"tojson.js-demo\" dev",

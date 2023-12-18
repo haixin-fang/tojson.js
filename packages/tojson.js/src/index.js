@@ -1,6 +1,6 @@
-export * from "psd-json.js";
+export * as psdtojson from "psd-json.js";
 
-export * from "sketchtojson";
+export * as sketchtojson from "sketchtojson";
 
 import Psd from "psd-json.js";
 
