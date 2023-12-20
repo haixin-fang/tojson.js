@@ -1,7 +1,7 @@
 <template>
   <div class="tojson">
     <div class="btn" @click="isShow = true">导入</div>
-    <div class="jsoneditor" ref="tojson"></div>
+    <div class="jsoneditor" ref="tojson" v-show="!isShow"></div>
     <teleport to="body" v-if="isShow">
       <div class="gda-modal-root">
         <div class="gda-modal-mask"></div>
@@ -155,8 +155,11 @@ tryOnMounted(() => {
   useEventListener(dragArea.value, "dragover", onDragOver);
   useEventListener(dragArea.value, "dragleave", onDragLeave);
   useEventListener(dragArea.value, "drop", onDrop);
-
-  editor = new JSONEditor(tojson.value);
+  const options = {
+    modes: ["code", "view", "text"],
+    search: false,
+  };
+  editor = new JSONEditor(tojson.value, options);
 });
 
 function onDragOver(e) {
@@ -243,7 +246,11 @@ async function onGuide() {
     margin: 8px auto;
   }
 }
-.btn{
+.jsoneditor{
+  width: 80vw;
+  height: 80vh;
+}
+.btn {
   width: 100px;
   height: 50px;
   display: flex;
