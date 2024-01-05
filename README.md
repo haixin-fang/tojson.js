@@ -57,6 +57,7 @@ npm i -S tojson.js
 ```js
 npm i -S psd-json.js
 ```
+
 或
 
 ```js
@@ -67,28 +68,40 @@ npm i -S sketchtojson
 
 ```js
 import toJson, { getFileType, types as fileTypes, psdtojson, sketchtojson } from "tojson.js";
+const options = {
+  uploadUrl: options.uploadUrl, // 图片上传的接口地址
+  uploadCallback: options.uploadCallback, // 上传完成后的数据处理回调方法
+};
 // psd、sketch文件
-const result = await toJson(files);
+const result = await toJson(files, options);
 // 或
-const result = await psdtojson(files);
+const result = await psdtojson(files, options);
 // 或
-const result = await sketchtojson(files);
+const result = await sketchtojson(files, options);
 ```
 
 ```js
 import sketchtojson from "sketchtojson";
+const options = {
+  uploadUrl: options.uploadUrl, // 图片上传的接口地址
+  uploadCallback: options.uploadCallback, // 上传完成后的数据处理回调方法
+};
 // psd、sketch文件
-const result = await sketchtojson(files);
+const result = await sketchtojson(files, options);
 ```
 
 ```js
 import psdtojson from "psd-json.js";
+const options = {
+  uploadUrl: options.uploadUrl, // 图片上传的接口地址
+  uploadCallback: options.uploadCallback, // 上传完成后的数据处理回调方法
+};
 // psd、sketch文件
-const result = await psdtojson(files);
+const result = await psdtojson(files, options);
 ```
 
 - getFileType 方法能获取文件类型
-- types 返回支持的文件类型, 如psd、sketch
+- types 返回支持的文件类型, 如 psd、sketch
 
 ## 未来
 
@@ -96,4 +109,3 @@ const result = await psdtojson(files);
 
 - ppt 解析
 - pdf 解析
-

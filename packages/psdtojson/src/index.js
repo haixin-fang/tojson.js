@@ -5,10 +5,12 @@ if (typeof window.Buffer === "undefined") {
   window.Buffer = a;
 }
 class Psd {
-  constructor(uploadUrl, uploadCallback) {
-    // 存储模板json
-    this.uploadUrl = uploadUrl;
-    this.uploadCallback = uploadCallback;
+  constructor(options = {}) {
+    if (options.uploadUrl && options.uploadCallback) {
+      // 存储模板json
+      this.uploadUrl = options.uploadUrl;
+      this.uploadCallback = options.uploadCallback;
+    }
   }
 
   async init(file) {

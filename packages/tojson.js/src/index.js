@@ -9,11 +9,11 @@ import Sketch from "sketchtojson";
 import getFileTypes from "./getFileType";
 
 const mapStrategyType = {
-  psd: () => {
-    return new Psd();
+  psd: (options) => {
+    return new Psd(options);
   },
-  sketch: () => {
-    return new Sketch();
+  sketch: (options) => {
+    return new Sketch(options);
   },
 };
 
@@ -21,12 +21,12 @@ export const getFileType = getFileTypes;
 
 export const types = Object.keys(mapStrategyType);
 
-export default async (files) => {
+export default async (files, options) => {
   const file = await getFileTypes(files);
   if (file) {
     const { ext } = file;
     if (mapStrategyType[ext]) {
-      const handler = mapStrategyType[ext]();
+      const handler = mapStrategyType[ext](options);
       const data = await handler.init(files);
       return data;
     } else {
