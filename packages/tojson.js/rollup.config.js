@@ -29,7 +29,7 @@ export default [
   // `file` and `format` for each target)
   {
     input: "src/index.js",
-    external: ["sketchtojson", "psdtojson"],
+    external: ["sketchtojson", "psd-json.js", "pptx-json"],
     output: [
       { file: pkg.main, format: "cjs" },
       { file: pkg.module, format: "es" },

@@ -1,13 +1,14 @@
 {
   "name": "tojson.js",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "main": "dist/tojson.js.cjs.js",
   "module": "dist/tojson.js.esm.js",
   "browser": "dist/tojson.js.umd.js",
   "type": "module",
   "dependencies": {
     "psd-json.js": "^1.0.0",
-    "sketchtojson": "^1.0.4"
+    "sketchtojson": "^1.0.4",
+    "pptx-json": "^1.0.1"
   },
   "devDependencies": {
     "@babel/core": "^7.23.5",

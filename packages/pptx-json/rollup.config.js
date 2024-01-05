@@ -29,7 +29,7 @@ export default [
   // `file` and `format` for each target)
   {
     input: "src/index.js",
-    external: ["sketchtojson", "psdtojson"],
+    external: ["jszip", "tinycolor2", "txml"],
     output: [
       { file: pkg.main, format: "cjs" },
       { file: pkg.module, format: "es" },

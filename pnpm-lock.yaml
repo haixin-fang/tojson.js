@@ -186,6 +186,9 @@ importers:
 
   packages/tojson.js:
     dependencies:
+      pptx-json:
+        specifier: ^1.0.1
+        version: link:../pptx-json
       psd-json.js:
         specifier: ^1.0.0
         version: link:../psdtojson

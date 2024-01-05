@@ -62,11 +62,9 @@ async function parse(file, options = {}) {
   const pptJson = {};
   if (result.length > 1) {
     pptJson.templates = result;
-    console.log(JSON.stringify(result[0]));
   } else if (result.length == 1) {
     pptJson.json = result[0];
   }
-  console.log("pptJson", pptJson);
   return pptJson;
 }
 

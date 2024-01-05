@@ -2,9 +2,13 @@ export * as psdtojson from "psd-json.js";
 
 export * as sketchtojson from "sketchtojson";
 
+export * as pptxtojson from "pptx-json";
+
 import Psd from "psd-json.js";
 
 import Sketch from "sketchtojson";
+
+import PPT from "pptx-json";
 
 import getFileTypes from "./getFileType";
 
@@ -15,6 +19,9 @@ const mapStrategyType = {
   sketch: (options) => {
     return new Sketch(options);
   },
+  pptx: (options) => {
+    return new PPT(options);
+  }
 };
 
 export const getFileType = getFileTypes;

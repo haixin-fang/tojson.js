@@ -6,8 +6,14 @@ const signatureList = [
   {
     mime: "image/sketch",
     ext: "sketch",
-    signature: [80, 75, 3, 4,20],
+    signature: [80, 75, 3, 4, 20, 0, 2, 0, 8, 0],
   },
+  {
+    mime: "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+    ext: "pptx",
+    signature: [80, 75, 3, 4, 20, 0, 6, 0, 8, 0],
+  },
+
   {
     mime: "video/mp4",
     ext: "mp4",
@@ -295,21 +301,6 @@ const signatureList = [
     ext: "pcap",
     mime: "application/vnd.tcpdump.pcap",
     signature: [0xa1, 0xb2, 0xc3, 0xd4],
-  },
-  {
-    mime: "text/plain",
-    ext: "txt",
-    signature: [0xef, 0xbb, 0xbf],
-  },
-  {
-    mime: "text/plain",
-    ext: "txt",
-    signature: [0xfe, 0xff],
-  },
-  {
-    mime: "text/plain",
-    ext: "txt",
-    signature: [0xff, 0xfe],
   },
 ];
 
