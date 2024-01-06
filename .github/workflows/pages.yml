@@ -26,7 +26,7 @@ jobs:
       - run: pnpm bootstrap
 
       - name: Build Playground site
-        run: npm run bd
+        run: npm run build
 
       - name: clean dist
         run: rm -rf dist
