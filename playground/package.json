@@ -1,6 +1,5 @@
 {
   "name": "tojson.js-demo",
-  "private": true,
   "version": "0.0.0",
   "scripts": {
     "dev": "vite",
