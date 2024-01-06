@@ -1,7 +1,7 @@
 {
   "name": "tojson",
   "version": "1.0.0",
-  "description": "",
+  "description": "tojson.js 是一个支持解析 Psd、Sketch、PPT转 json 的类库, 该 json 满足 fabric.js 渲染的数据格式.",
   "main": "index.js",
   "packageManager": "pnpm@7.1.9",
   "scripts": {
