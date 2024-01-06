@@ -7,7 +7,7 @@ if (process.env.NODE_ENV != "production") {
   alias.push({ find: /^tojson.js$/, replacement: path.join(__dirname, "../packages/tojson.js/src/index.js") });
   alias.push({ find: /^sketch$/, replacement: path.join(__dirname, "../packages/sketchtojson/src/index.js") });
 } else {
-  alias.push({ find: /^tojson.js$/, replacement: path.join(__dirname,"node_modules", "tojson.js/src/index.js") });
+  alias.push({ find: /^tojson.js$/, replacement: path.join(__dirname,"node_modules", "tojson.js/dist/tojson.js.esm.js") });
 }
 export default defineConfig({
   resolve: {
