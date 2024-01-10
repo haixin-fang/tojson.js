@@ -1,6 +1,6 @@
 {
   "name": "pptx-json",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "main": "dist/pptx-json.cjs.js",
   "module": "dist/pptx-json.esm.js",
   "browser": "dist/pptx-json.umd.js",
