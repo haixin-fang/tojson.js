@@ -36,13 +36,13 @@ export function genTextBody(textBodyNode, slideLayoutSpNode, slideMasterSpNode, 
         });
       }
     }
-
     const align = getHorizontalAlign(pNode, slideLayoutSpNode, slideMasterSpNode, type, slideMasterTextStyles);
     // const listType = getListType(pNode);
-    const result = {};
-    result.align = align;
-    if (!rNode) styles.push(genSpanElement(pNode, slideLayoutSpNode, type, warpObj, fontsizeFactor, slideFactor, textBodySpPr));
-    else {
+    if (!rNode) {
+      const result = genSpanElement(pNode, slideLayoutSpNode, type, warpObj, fontsizeFactor, slideFactor, textBodySpPr);
+      result.align = align;
+      styles.push(result);
+    } else {
       let newStyles = [];
       for (const rNodeItem of rNode) {
         newStyles.push(genSpanElement(rNodeItem, slideLayoutSpNode, type, warpObj, fontsizeFactor, slideFactor, textBodySpPr));
@@ -52,15 +52,9 @@ export function genTextBody(textBodyNode, slideLayoutSpNode, slideMasterSpNode, 
         resultText += item.text;
       });
       newStyles[0].text = resultText;
+      newStyles[0].align = align;
       styles.push(newStyles[0]);
     }
-    // let fallyText = "";
-    // styles.forEach((item) => {
-    //   fallyText += item.text;
-    // });
-    // styles[0].text = fallyText;
-    // if (listType) text += '</li>'
-    // else text += '</p>'
   }
   if (styles.length > 1) {
     const newText = styles.reduce((now, next) => {

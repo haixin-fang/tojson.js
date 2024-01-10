@@ -12,7 +12,7 @@ import { getShadow } from "./shadow";
 
 let SLIDE_FACTOR = 96 / 914400;
 let FONTSIZE_FACTOR = 100 / 75;
-
+let processFullTheme = true;
 const defaultOptions = {
   slideFactor: SLIDE_FACTOR,
   fontsizeFactor: FONTSIZE_FACTOR,
@@ -51,11 +51,16 @@ async function parse(file, options = {}) {
   const slides = [];
 
   const zip = await JSZip.loadAsync(file);
+  let bgImage = "";
+  // ppt第一页缩略图
+  if (zip.file("docProps/thumbnail.jpeg") !== null) {
+    bgImage = "data:image/jpeg;base64," + base64ArrayBuffer(await zip.file("docProps/thumbnail.jpeg").async("arraybuffer"));
+  }
   const filesInfo = await getContentTypes(zip);
   const { width, height, defaultTextStyle } = await getSlideInfo(zip);
   const themeContent = await loadTheme(zip);
   for (const filename of filesInfo.slides) {
-    const singleSlide = await processSingleSlide(zip, filename, themeContent, defaultTextStyle);
+    const singleSlide = await processSingleSlide(zip, filename, themeContent, defaultTextStyle, { width, height });
     slides.push(singleSlide);
   }
   const result = await getLayer(slides, width, height);
@@ -64,6 +69,9 @@ async function parse(file, options = {}) {
     pptJson.templates = result;
   } else if (result.length == 1) {
     pptJson.json = result[0];
+  }
+  if (bgImage) {
+    pptJson.slImage = bgImage;
   }
   return pptJson;
 }
@@ -78,11 +86,17 @@ function getPptJson(childrenList, resolve, list, item) {
       result.left = element.left;
       result.top = element.top;
       result.angle = element.rotate;
-      result.flipX = element.isFlipH;
-      result.flipX = element.isFlipV;
+      if (element.isFlipH) {
+        result.flipX = element.isFlipH;
+      }
+      if (element.isFlipV) {
+        result.flipX = element.isFlipV;
+      }
       result.name = element.name;
       if (element.type == "text") {
-        result.fontSize = parseInt(element.fontSize.replace("px", ""));
+        if (element.fontSize) {
+          result.fontSize = parseInt(element.fontSize.replace("px", ""));
+        }
         result.type = "FontCustom";
         result.fontFamily = element.fontType;
         result.fontWeight = element.fontBold;
@@ -90,10 +104,10 @@ function getPptJson(childrenList, resolve, list, item) {
         if (element.fontSpace) {
           result.charSpacing = parseInt(element.fontSpace.replace("px", ""));
         }
-        result.text = element.text;
+        result.text = element.text || "";
         if (!element.fillColor) {
           if (item.fill && item.fill.type == "color") {
-            result.fill = item.value;
+            result.fill = item.fill.value;
           }
         }
         list[i] = result;
@@ -115,7 +129,7 @@ function getPptJson(childrenList, resolve, list, item) {
           // 子图层图片
           result.src = urlRes;
           // 图片返回图片url
-          result.type = "image";
+          result.type = "Image";
           list[i] = result;
           res(result);
         });
@@ -186,7 +200,7 @@ async function getLayer(workspaces, width, height) {
   const list = [];
   const resultList = [];
   workspaces.forEach((item) => {
-    const result = [];
+    let result = [];
     list.push(
       Promise.all(getPptJson(item.elements, null, result, item)).then(() => {
         let workareaObj = {}; //JSON.parse(JSON.stringify(psdJson.workarea));
@@ -203,6 +217,54 @@ async function getLayer(workspaces, width, height) {
   });
   await Promise.all(list);
   return resultList;
+}
+
+async function getBackground(warpObj) {
+  //var rslt = "";
+  var slideLayoutContent = warpObj["slideLayoutContent"];
+  var slideMasterContent = warpObj["slideMasterContent"];
+
+  var nodesSldLayout = getTextByPathList(slideLayoutContent, ["p:sldLayout", "p:cSld", "p:spTree"]);
+  var nodesSldMaster = getTextByPathList(slideMasterContent, ["p:sldMaster", "p:cSld", "p:spTree"]);
+  var showMasterSp = getTextByPathList(slideLayoutContent, ["p:sldLayout", "attrs", "showMasterSp"]);
+  var bgColor = await getSlideBackgroundFill(warpObj);
+  const result = [];
+  if (nodesSldLayout !== undefined) {
+    for (var nodeKey in nodesSldLayout) {
+      if (nodesSldLayout[nodeKey].constructor === Array) {
+        for (var i = 0; i < nodesSldLayout[nodeKey].length; i++) {
+          var ph_type = getTextByPathList(nodesSldLayout[nodeKey][i], ["p:nvSpPr", "p:nvPr", "p:ph", "attrs", "type"]);
+          if (ph_type != "pic") {
+            result.push(processNodesInSlide(nodeKey, nodesSldLayout[nodeKey][i], warpObj, nodesSldLayout, "slideLayoutBg")); //slideLayoutBg , slideMasterBg
+          }
+        }
+      } else {
+        if (ph_type != "pic") {
+          result.push(processNodesInSlide(nodeKey, nodesSldLayout[nodeKey], warpObj, nodesSldLayout, "slideLayoutBg")); //slideLayoutBg, slideMasterBg
+        }
+      }
+    }
+  }
+  // nodeKey, nodeValue, warpObj
+  if (nodesSldMaster !== undefined && (showMasterSp == "1" || showMasterSp === undefined)) {
+    for (let nodeKey in nodesSldMaster) {
+      if (nodesSldMaster[nodeKey].constructor === Array) {
+        for (let i = 0; i < nodesSldMaster[nodeKey].length; i++) {
+          result.push(processNodesInSlide(nodeKey, nodesSldMaster[nodeKey][i], warpObj, nodesSldLayout, "slideMasterBg")); //slideLayoutBg , slideMasterBg
+        }
+      } else {
+        result.push(processNodesInSlide(nodeKey, nodesSldMaster[nodeKey], warpObj, nodesSldLayout, "slideMasterBg")); //slideLayoutBg, slideMasterBg
+      }
+    }
+  }
+  let res = await Promise.all(result);
+  res = res.filter((item) => {
+    return item;
+  });
+  return {
+    element: res,
+    fill: bgColor,
+  };
 }
 
 async function getContentTypes(zip) {
@@ -268,7 +330,7 @@ async function loadTheme(zip) {
   return await readXmlFile(zip, "ppt/" + themeURI);
 }
 
-async function processSingleSlide(zip, sldFileName, themeContent, defaultTextStyle) {
+async function processSingleSlide(zip, sldFileName, themeContent, defaultTextStyle, slideSize) {
   const resName = sldFileName.replace("slides/slide", "slides/_rels/slide") + ".rels";
   const resContent = await readXmlFile(zip, resName);
   let relationshipArray = resContent["Relationships"]["Relationship"];
@@ -427,9 +489,26 @@ async function processSingleSlide(zip, sldFileName, themeContent, defaultTextSty
     diagramResObj: diagramResObj,
     defaultTextStyle: defaultTextStyle,
   };
-  const bgColor = await getSlideBackgroundFill(warpObj);
+  let bgResult = "";
+  if (processFullTheme === true) {
+    bgResult = await getBackground(warpObj);
+  }
+  let bgColor = await getSlideBackgroundFill(warpObj);
 
   const elements = [];
+  if (bgResult && bgResult.element && bgResult.element.length > 0) {
+    elements.push({
+      type: "group",
+      width: slideSize.width,
+      height: slideSize.height,
+      elements: bgResult.element,
+      fill: bgResult.fill && bgResult.fill.value,
+      top: 0,
+      left: 0,
+      name: "背景组",
+      angle: 0,
+    });
+  }
   for (const nodeKey in nodes) {
     if (nodes[nodeKey].constructor === Array) {
       for (const node of nodes[nodeKey]) {
@@ -486,18 +565,18 @@ function indexNodes(content) {
   return { idTable, idxTable, typeTable };
 }
 
-async function processNodesInSlide(nodeKey, nodeValue, warpObj) {
+async function processNodesInSlide(nodeKey, nodeValue, warpObj, nodes, source, sType) {
   let json;
 
   switch (nodeKey) {
     case "p:sp": // Shape, Text
-      json = processSpNode(nodeValue, warpObj);
+      json = processSpNode(nodeValue, warpObj, nodes, source, sType);
       break;
     case "p:cxnSp": // Shape, Text
-      json = processCxnSpNode(nodeValue, warpObj);
+      json = processCxnSpNode(nodeValue, warpObj, nodes, source, sType);
       break;
     case "p:pic": // Image, Video, Audio
-      json = processPicNode(nodeValue, warpObj);
+      json = processPicNode(nodeValue, warpObj, source);
       break;
     case "p:graphicFrame": // Chart, Diagram, Table
       json = await processGraphicFrameNode(nodeValue, warpObj);
@@ -550,13 +629,21 @@ async function processGroupSpNode(node, warpObj) {
   };
 }
 
-function processSpNode(node, warpObj, source) {
+function processSpNode(node, warpObj, pNode, source, sType) {
   const id = getTextByPathList(node, ["p:nvSpPr", "p:cNvPr", "attrs", "id"]);
   const name = getTextByPathList(node, ["p:nvSpPr", "p:cNvPr", "attrs", "name"]);
   const idx = getTextByPathList(node, ["p:nvSpPr", "p:nvPr", "p:ph", "attrs", "idx"]);
   let type = getTextByPathList(node, ["p:nvSpPr", "p:nvPr", "p:ph", "attrs", "type"]);
-
   let slideLayoutSpNode, slideMasterSpNode;
+  let isUserDrawnBg;
+  if (source == "slideLayoutBg" || source == "slideMasterBg") {
+    let userDrawn = getTextByPathList(node, ["p:nvSpPr", "p:nvPr", "attrs", "userDrawn"]);
+    if (userDrawn == "1") {
+      isUserDrawnBg = true;
+    } else {
+      isUserDrawnBg = false;
+    }
+  }
 
   if (type) {
     if (idx) {
@@ -582,8 +669,7 @@ function processSpNode(node, warpObj, source) {
     if (source === "diagramBg") type = "diagram";
     else type = "obj";
   }
-
-  return genShape(node, slideLayoutSpNode, slideMasterSpNode, id, name, idx, type, warpObj);
+  return genShape(node, slideLayoutSpNode, slideMasterSpNode, id, name, idx, type, warpObj, pNode, isUserDrawnBg, sType, source);
 }
 
 function processCxnSpNode(node, warpObj) {
@@ -595,7 +681,7 @@ function processCxnSpNode(node, warpObj) {
   return genShape(node, undefined, undefined, id, name, idx, type, warpObj);
 }
 
-function genShape(node, slideLayoutSpNode, slideMasterSpNode, id, name, idx, type, warpObj) {
+function genShape(node, slideLayoutSpNode, slideMasterSpNode, id, name, idx, type, warpObj, pNode, isUserDrawnBg) {
   const xfrmList = ["p:spPr", "a:xfrm"];
   const slideXfrmNode = getTextByPathList(node, xfrmList);
   const slideLayoutXfrmNode = getTextByPathList(slideLayoutSpNode, xfrmList);
@@ -620,10 +706,11 @@ function genShape(node, slideLayoutSpNode, slideMasterSpNode, id, name, idx, typ
   } else txtRotate = rotate;
 
   let content = "";
-  if (node["p:txBody"]) content = genTextBody(node["p:txBody"], slideLayoutSpNode, slideMasterSpNode, type, warpObj, FONTSIZE_FACTOR, SLIDE_FACTOR, node["p:spPr"]);
+  if (node["p:txBody"] !== undefined && (isUserDrawnBg === undefined || isUserDrawnBg === true)) {
+    content = genTextBody(node["p:txBody"], slideLayoutSpNode, slideMasterSpNode, type, warpObj, FONTSIZE_FACTOR, SLIDE_FACTOR, node["p:spPr"]);
+  }
   const { borderColor, borderWidth, borderType, strokeDasharray } = getBorder(node, type, warpObj);
   const fillColor = getShapeFill(node, undefined, warpObj) || "";
-
   let shadow;
   const outerShdwNode = getTextByPathList(node, ["p:spPr", "a:effectLst", "a:outerShdw"]);
   if (outerShdwNode) shadow = getShadow(outerShdwNode, warpObj, SLIDE_FACTOR);
